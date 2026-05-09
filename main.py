@@ -26,19 +26,19 @@ async def generate_podcast():
     news_data = get_hindi_news()
     
     # Prompting Gemini to expand content for 20 minutes
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-2.5-flash')
     prompt = f"""
     You are a professional Hindi podcast host. Based on these news headlines:
     {news_data}
     
-    Write a 20-minute long, engaging podcast script in Hindi (written in Devanagari script).
+    Write a 2-minute long, engaging podcast script in Hindi (written in Devanagari script).
     Structure:
     1. Intro: Welcome to 'Daily Samachar Podcast'.
     2. Deep Dive: Discuss each news item in detail. Add background info and possible impacts.
     3. Commentary: Keep the tone conversational, friendly, and informative.
     4. Outro: Summary and sign-off.
     
-    Note: The script must be very long (approx 3000 words) to fill 20 minutes.
+    Note: The script must be exactly 2 minutes duration (approx 150 words) to fill 5 minutes.
     """
     
     response = model.generate_content(prompt)
