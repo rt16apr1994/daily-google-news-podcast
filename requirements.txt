@@ -1,0 +1,4 @@
+gnews
+google-generativeai
+edge-tts
+requests
