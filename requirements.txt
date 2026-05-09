@@ -1,4 +1,3 @@
+google-genai
 gnews
-google-generativeai
-edge-tts
 requests
