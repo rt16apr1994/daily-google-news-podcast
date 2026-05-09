@@ -2,9 +2,13 @@ import os
 import asyncio
 from datetime import datetime
 from gnews import GNews
-import google.generativeai as genai
+import google.generativeai as genai # Note: If you want to use the new 'google-genai', the syntax changes slightly
 import edge_tts
 import requests
+
+# Set Gemini to ignore the EOL warnings in logs
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 # Configuration
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -49,11 +53,24 @@ async def generate_podcast():
     await communicate.save("podcast.mp3")
 
 def send_to_telegram():
+    if not os.path.exists("podcast.mp3"):
+        print("Error: podcast.mp3 was never created!")
+        return
+
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendAudio"
+    print(f"Attempting to send to Chat ID: {TELEGRAM_CHAT_ID}")
+    
     with open("podcast.mp3", "rb") as audio:
         payload = {"chat_id": TELEGRAM_CHAT_ID, "caption": f"आज का पॉडकास्ट: {datetime.now().strftime('%d %b %Y')}"}
         files = {"audio": audio}
-        requests.post(url, data=payload, files=files)
+        
+        response = requests.post(url, data=payload, files=files)
+        
+        if response.status_code == 200:
+            print("Successfully sent to Telegram!")
+        else:
+            print(f"Failed to send. Status Code: {response.status_code}")
+            print(f"Response: {response.text}") # This will tell us the exact Telegram error
 
 if __name__ == "__main__":
     asyncio.run(generate_podcast())
